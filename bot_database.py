@@ -23,3 +23,16 @@ def update_wallet(usr, primo):
     a = mycursor.fetchone()
     mydb.commit()
     return a[0]
+
+
+def wish_timestamp_get(usr):
+    mycursor.execute("select wish_time from data where userid = '" + usr + "'")
+    a = mycursor.fetchone()
+    mydb.commit()
+    return a[0]
+
+
+def wish_timestamp_update(usr, time):
+    mycursor.execute("update data set wish_time = " + str(time) + " where userid = '" + usr + "'")
+    a = mycursor.fetchone()
+    mydb.commit()

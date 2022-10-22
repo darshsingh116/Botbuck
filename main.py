@@ -3,6 +3,8 @@ import random
 import asyncio
 from discord.ext import commands
 import bot_database
+import calendar
+import time
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -33,20 +35,27 @@ async def on_message(message):
         primo = str(bot_database.wallet(usr))
         await message.channel.send("U have " + primo + " primo in your wallet!")
 
-    if message.content.startswith('wish'):
-        x = random.randint(1, 5)
-        primo_final = int(bot_database.wallet(usr)) + x
-        pr = bot_database.update_wallet(usr, str(primo_final))
-        c = str(x) + " Primos have been thrown at you!  " + str(pr) + ' is your new balance'
-        await message.channel.send(c)
+    if message.content.startswith('$wish'):
+        current_GMT = time.gmtime()
+        time_stamp = calendar.timegm(current_GMT)
+        if bot_database.wish_timestamp_get(usr) <= (time_stamp - 300):
+            x = random.randint(1, 5)
+            primo_final = int(bot_database.wallet(usr)) + x
+            pr = bot_database.update_wallet(usr, str(primo_final))
+            c = str(x) + " Primos have been thrown at you!  " + str(pr) + ' is your new balance'
+            bot_database.wish_timestamp_update(usr, time_stamp)
+            await message.channel.send(c)
+        else:
+            await message.channel.send(" Have Patience!! , wish every 5 min")
+
     await bot.process_commands(message)
 
     #################################################################################################
 
 
-@bot.command()
-async def happy(ctx):
-    await ctx.send("Why bro?")
+# @bot.command()
+# async def happy(ctx):
+#     await ctx.send("Why bro?")
 
 
 @bot.command(name="gamble")
@@ -95,4 +104,4 @@ async def _command(ctx):
 #     await ctx.send(msg.author)
 
 
-bot.run("MTAzMjUzNTkwMDUzMTQ2NjI5MQ.GrzgJe.7rrFDSDyn-o1c8LJj9I75f8Dfy5JP9yVmYW55s")
+bot.run(".")

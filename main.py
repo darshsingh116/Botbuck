@@ -30,6 +30,11 @@ async def on_message(message):
         bot_database.register(usr)
         await message.channel.send(usr+" Have been registered!")
 
+    if message.content == '$wallet':
+        usr = str(message.author)
+        primo = str(bot_database.wallet(usr))
+        await message.channel.send("U have " + primo + " primo in your wallet!")
+
 
 
     #################################################################################################
@@ -78,4 +83,4 @@ async def _command(ctx):
 
 
 
-bot.run("MTAzMjUzNTkwMDUzMTQ2NjI5MQ.GVvbTp.wo68RLazlH9Pf36p_pZ1fBGiXV9Lb1NgKFZzQo")
+bot.run(".")

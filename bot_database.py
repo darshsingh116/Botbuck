@@ -13,6 +13,7 @@ def register(usr):
 def wallet(usr):
     mycursor.execute("select primo from data where userid = '" + usr + "'")
     a = mycursor.fetchone()
+    mydb.commit()
     return a[0]
 
 
@@ -20,4 +21,5 @@ def update_wallet(usr, primo):
     mycursor.execute("update data set primo =" + primo + " where userid = '" + usr + "'")
     mycursor.execute("select primo from data where userid = '" + usr + "'")
     a = mycursor.fetchone()
+    mydb.commit()
     return a[0]

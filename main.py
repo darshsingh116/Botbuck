@@ -63,12 +63,16 @@ async def _command(ctx):
         msg = await bot.wait_for("message", check=check, timeout=5.0)
         if msg.content.lower() == "y":
             x = random.randint(-100, 100)
-            if (x < 0):
-                c = 'Oh no! You lost ' + str(abs(x)) + ' primos!'
+            user = str(msg.author)
+
+            primo_final = x + int(bot_database.wallet(user))
+            pr = bot_database.update_wallet(user, str(primo_final))
+            if x < 0:
+                c = 'Oh no! You lost ' + str(abs(x)) + ' primos!' + " Your new balance is now " + str(pr)
                 await ctx.send(c)
 
             elif x >= 0:
-                c = 'Congratulations you gained ' + str(x) + ' primos!'
+                c = 'Congratulations you gained ' + str(x) + ' primos!' + " Your new balance is now " + str(pr)
                 await ctx.send(c)
 
         else:
@@ -77,4 +81,18 @@ async def _command(ctx):
         await ctx.send("Y u bully me")
 
 
-bot.run(".")
+# @bot.command(name="tf1")
+# async def _command(ctx):
+#     await ctx.send(f"yo")
+#
+#     # This will make sure that the response will only be registered if the following
+#     # conditions are met:
+#     def check(msg):
+#         return msg.author == ctx.author and msg.channel == ctx.channel and \
+#                msg.content.lower() in ["y", "n"]
+#
+#     msg = await bot.wait_for("message", check=check, timeout=10.0)
+#     await ctx.send(msg.author)
+
+
+bot.run("MTAzMjUzNTkwMDUzMTQ2NjI5MQ.GrzgJe.7rrFDSDyn-o1c8LJj9I75f8Dfy5JP9yVmYW55s")

@@ -16,6 +16,7 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    usr = str(message.author)
     if message.author == bot.user:
         return
 
@@ -24,26 +25,23 @@ async def on_message(message):
 
     ######################################### database commads  ####################################
 
-
     if message.content == '$register':
-        usr = str(message.author)
         bot_database.register(usr)
-        await message.channel.send(usr+" Have been registered!")
+        await message.channel.send(usr + " Have been registered!")
 
     if message.content == '$wallet':
-        usr = str(message.author)
         primo = str(bot_database.wallet(usr))
         await message.channel.send("U have " + primo + " primo in your wallet!")
 
-
-
-    #################################################################################################
-    x = random.randint(1, 5)
-    c = str(x) + ' Primos have been thrown at you!'
-
     if message.content.startswith('wish'):
+        x = random.randint(1, 5)
+        primo_final = int(bot_database.wallet(usr)) + x
+        pr = bot_database.update_wallet(usr, str(primo_final))
+        c = str(x) + " Primos have been thrown at you!  " + str(pr) + ' is your new balance'
         await message.channel.send(c)
     await bot.process_commands(message)
+
+    #################################################################################################
 
 
 @bot.command()
@@ -77,10 +75,6 @@ async def _command(ctx):
             await ctx.send("Then don't call me dumbo!")
     except:
         await ctx.send("Y u bully me")
-
-
-
-
 
 
 bot.run(".")

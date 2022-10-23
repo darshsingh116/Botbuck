@@ -1,6 +1,6 @@
 import mysql.connector
 
-mydb = mysql.connector.connect(host="localhost", user="root", passwd="0000")
+mydb = mysql.connector.connect(host="localhost", user="root", passwd="BotBuck123!")
 mycursor = mydb.cursor()
 mycursor.execute("use botbuck")
 
@@ -36,3 +36,10 @@ def wish_timestamp_update(usr, time):
     mycursor.execute("update data set wish_time = " + str(time) + " where userid = '" + usr + "'")
     a = mycursor.fetchone()
     mydb.commit()
+
+
+def token():
+    mycursor.execute("select * from token ")
+    a = mycursor.fetchone()
+    mydb.commit()
+    return a[0]

@@ -10,6 +10,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(intents=intents, command_prefix='$')
 
+_token = bot_database.token()
 
 @bot.event
 async def on_ready():
@@ -104,4 +105,4 @@ async def _command(ctx):
 #     await ctx.send(msg.author)
 
 
-bot.run(".")
+bot.run(_token)

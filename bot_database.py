@@ -6,7 +6,7 @@ mycursor.execute("use botbuck")
 
 
 def register(usr):
-    mycursor.execute("insert into data values('" + usr + "',100);")
+    mycursor.execute("insert into data values('" + usr + "',100 ,0);")
     mydb.commit()
 
 

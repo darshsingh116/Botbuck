@@ -14,7 +14,7 @@ def register(usr):
     mycursor = mydb.cursor()
     mycursor.execute("use botbuck")
 
-    mycursor.execute("insert into data values('" + usr + "',100 ,0);")
+    mycursor.execute("insert into data values('" + usr + "',100 ,0, 0, 0 ,0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);")
     mydb.commit()
 
     mycursor.close()
@@ -75,6 +75,29 @@ def wish_timestamp_update(usr, time):
 
     mycursor.close()
 
+
+def starter(usr, character):
+    mydb = mysql.connector.connect(host="localhost", user="root", passwd="BotBuck123!",
+                                   auth_plugin='mysql_native_password')
+    mycursor = mydb.cursor()
+    mycursor.execute("use botbuck")
+
+    mycursor.execute(("update data set " + character + " = 1 where userid = '" + usr + "';"))
+    mydb.commit()
+
+    mycursor.close()
+
+
+def wish_character(usr, character):
+    mydb = mysql.connector.connect(host="localhost", user="root", passwd="BotBuck123!",
+                                   auth_plugin='mysql_native_password')
+    mycursor = mydb.cursor()
+    mycursor.execute("use botbuck")
+
+    mycursor.execute(("update data set " + character + " = " + character + "+ 1 where userid = '" + usr + "';"))
+    mydb.commit()
+
+    mycursor.close()
 
 def token():
     mydb = mysql.connector.connect(host="localhost", user="root", passwd="BotBuck123!",

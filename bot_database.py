@@ -111,3 +111,23 @@ def token():
 
     mycursor.close()
     return a[0]
+
+def inv_name(usr):
+    mydb = mysql.connector.connect(host="localhost", user="root", passwd="BotBuck123!",
+                                   auth_plugin='mysql_native_password')
+    mycursor = mydb.cursor()
+    mycursor.execute("use botbuck")
+    mycursor.execute("select amber,kaeya,lisa,barbara,diluc,jean,razor,klee,bennett,noelle,fischl,sucrose,mona,diona,albedo, rosaria,eula,venti from data where userid='"+usr+"'")
+
+    x = mycursor.description
+    return x
+
+def inv_value(usr):
+    mydb = mysql.connector.connect(host="localhost", user="root", passwd="BotBuck123!",
+                                   auth_plugin='mysql_native_password')
+    mycursor = mydb.cursor()
+    mycursor.execute("use botbuck")
+    mycursor.execute("select amber,kaeya,lisa,barbara,diluc,jean,razor,klee,bennett,noelle,fischl,sucrose,mona,diona,albedo, rosaria,eula,venti from data where userid='"+usr+"'")
+
+    x = mycursor.fetchone()
+    return x

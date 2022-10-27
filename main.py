@@ -30,7 +30,10 @@ async def on_message(message):
     ######################################### database commads  ####################################
 
     if message.content == '$register':
-        bot_database.register(usr)
+        try:
+            bot_database.register(usr)
+        except:
+            print("U have already been registered$")
         await message.channel.send(usr + " Have been registered!")
 
     if message.content == '$wallet':
@@ -132,6 +135,24 @@ async def _command(ctx):
 
     else:
         await ctx.send("It looks like you do not have enough primos. Please earn at least 160 before you can wish!")
+
+
+@bot.command()
+async def inventory(ctx):
+    user = str(ctx.author)
+    a = bot_database.inv_name(user)
+    b = bot_database.inv_value(user)
+    x = 0
+    c =[]
+
+    while x < len(b):
+        if b[x] != 0:
+             v = str(a[x][0]) +" Level " + str(b[x])
+             c.append(v)
+
+
+        x = x + 1
+    await ctx.send(" , ".join(c))
 
 
 # @bot.command(name="tf1")

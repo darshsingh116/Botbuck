@@ -3,3 +3,7 @@ $whoami
 $wallet
 $wish
 $gamble
+$inventory
+$checkin
+$starter
+$hunt

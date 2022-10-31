@@ -316,6 +316,8 @@ async def lol(ctx):
 async def attacking(ctx, usr, stats, char_selected, enemy ,lvl):
     global user_input
     global emojis
+    global loose
+    loose = False
 
     user_input = []
     emoji_list = ["\U0001F1E6","\U0001F1E7","\U0001F1E8","\U0001F1E9","\U0001F1EA","\U0001F1EB","\U0001F1EC","\U0001F1ED","\U0001F1EE","\U0001F1EF","\U0001F1F0","\U0001F1F1","\U0001F1F2","\U0001F1F3","\U0001F1F4","\U0001F1F5","\U0001F1F6","\U0001F1F7","\U0001F1F8","\U0001F1F9","\U0001F1FA","\U0001F1FB","\U0001F1FC","\U0001F1FD","\U0001F1FE","\U0001F1FF"]
@@ -328,6 +330,9 @@ async def attacking(ctx, usr, stats, char_selected, enemy ,lvl):
 
     for x in range(5):
         await message.add_reaction(emojis[x])
+
+    time.sleep(10)
+    loose=True
 
 
 
@@ -345,17 +350,20 @@ async def attacking(ctx, usr, stats, char_selected, enemy ,lvl):
 
             user_input.append(rex)
 
-        time.sleep(10)
 
-        answer = emojis.sort()
-        print(answer)
-        print(user_input)
+        if len(user_input)==5:
 
-        if answer == user_input:
-            await ctx.send("Enemies Defeated!")
+            # print(user_input)
 
-        else:
-            await ctx.send("you suck")
+            if user_input[0]<user_input[1]<user_input[2]<user_input[3]<user_input[4] and loose==False:
+                await ctx.send("Enemies Defeated!")
+
+            else:
+                await ctx.send("you suck")
+
+
+
+
 
 
 
@@ -375,4 +383,4 @@ async def attacking(ctx, usr, stats, char_selected, enemy ,lvl):
 #     await ctx.send(msg.author)
 
 
-bot.run("MTAzMjU1MTcwMzYxNjE1OTgwNg.GIokya.fs3teYkttqmMNRK6uVQHVyRKSkHfGc4PerGjZ8")
+bot.run("MTAzMjU1MTcwMzYxNjE1OTgwNg.GW1VqD.a40Rvh-D6an2tQh1tNG3U1eBaNHN4WtqdVMwVQ")

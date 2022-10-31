@@ -5,6 +5,7 @@ from discord.ext import commands
 import bot_database
 import calendar
 import time
+import math
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -55,7 +56,7 @@ async def on_ready():
 #
 #     await bot.process_commands(message)
 
-    #################################################################################################
+#################################################################################################
 
 
 # @bot.command()
@@ -98,15 +99,12 @@ async def _command(ctx):
         await ctx.send("U dont have minimum 100 to gamble. BE RESPONSIBLE!!")
 
 
-
-
-
 @bot.command()
 async def starter(ctx):
     user = str(ctx.author)
     b = bot_database.inv_value(user)
 
-    if all([ v == 0 for v in b ]) :
+    if all([v == 0 for v in b]):
         await ctx.send('Select a character Amber, Kaeya, Lisa')
 
         def check(msg):
@@ -134,9 +132,6 @@ async def starter(ctx):
         await  ctx.send('You already have characters , Ehe Te Nandayo!')
 
 
-
-
-
 @bot.command()
 async def wish(ctx):
     user = str(ctx.author)
@@ -159,13 +154,12 @@ async def inventory(ctx):
     a = bot_database.inv_name(user)
     b = bot_database.inv_value(user)
     x = 0
-    c =[]
+    c = []
 
     while x < len(b):
         if b[x] != 0:
-             v = str(a[x][0]) +" Level " + str(b[x])
-             c.append(v)
-
+            v = str(a[x][0]) + " Level " + str(b[x])
+            c.append(v)
 
         x = x + 1
     await ctx.send(" , ".join(c))
@@ -210,15 +204,13 @@ async def checkin(ctx):
         await ctx.send(" Have Patience!! , checkin every 5 min")
 
 
-
-
 @bot.command()
 async def hunt(ctx):
-    global user , stats ,char_selected,enemy
+    global user, stats, char_selected, enemy
     user = str(ctx.author)
     enemy = "n"
     char_selected = "n"
-    stats = [0,0,0]
+    stats = [0, 0, 0]
 
     await ctx.send(f"Select one \n"
                    f"1:Starter Hunt \n"
@@ -227,16 +219,16 @@ async def hunt(ctx):
 
     def check(msg):
         return msg.author == ctx.author and msg.channel == ctx.channel and \
-               msg.content #in ["1", "2"]
+               msg.content  # in ["1", "2"]
 
     try:
         msg = await bot.wait_for("message", check=check, timeout=15.0)
         if msg.content == "1":
-            l = ["hilichurl" , "ruin_guard" , "eremite" , "treasure_hoarder"]
+            l = ["hilichurl", "ruin_guard", "eremite", "treasure_hoarder"]
 
             enemy = random.choice(l)
 
-            await ctx.send("A " + enemy + " has appeared")
+            await ctx.send(f"A {enemy} has appeared")
 
 
 
@@ -256,27 +248,22 @@ async def hunt(ctx):
     except:
         await ctx.send("U are too slow to hunt!")
 
-
-
-
-
-
     if enemy != "n":
 
         try:
             char_selected = await bot.wait_for("message", check=check, timeout=5.0)
 
-
             try:
                 stats = bot_database.char_stat(char_selected.content)
                 print(stats)
-                b = bot_database.check_char(user,char_selected.content)
-                print(b)
-                if b[0] != 0:
+                lvl = bot_database.check_char(user, char_selected.content)[0]
+                print(lvl)
+                if lvl != 0:
                     await ctx.send("attacking")
 
-    #################################################attacking func##########################################################
+                    await attacking(ctx, user, stats, char_selected, enemy , lvl)
 
+                #################################################attacking func##########################################################
 
                 else:
                     await ctx.send("U dont have the char")
@@ -294,47 +281,81 @@ async def hunt(ctx):
 
         except:
             await ctx.send("Too Slow! The enemy is attacking you")
-            #logic
+            # logic
+
+
+@bot.command()
+async def test(ctx):
+    await ctx.send("yes")
+
+    def check(msg):
+        return msg.author == ctx.author and msg.channel == ctx.channel and \
+               msg.content
+
+    msg = await bot.wait_for("message", check=check, timeout=15.0)
+    # if msg.content == "no":
+
+
+@bot.command()
+async def lol(ctx):
+    message = await ctx.send('test')
+    emoji = '\N{THUMBS UP SIGN}'
+    print(emoji)
+    await message.add_reaction("\U0001F1E6")
+
+
+# @bot.event
+# async def on_reaction_add(reaction, user):
+#     global rex
+#     rex = reaction.emoji
+#     print(rex)
+#     print(reaction.message)
+#     print(reaction.message.id)
+#     print(reaction.message.author.id)
+
+async def attacking(ctx, usr, stats, char_selected, enemy ,lvl):
+    global user_input
+    global emojis
+
+    user_input = []
+    emoji_list = ["\U0001F1E6","\U0001F1E7","\U0001F1E8","\U0001F1E9","\U0001F1EA","\U0001F1EB","\U0001F1EC","\U0001F1ED","\U0001F1EE","\U0001F1EF","\U0001F1F0","\U0001F1F1","\U0001F1F2","\U0001F1F3","\U0001F1F4","\U0001F1F5","\U0001F1F6","\U0001F1F7","\U0001F1F8","\U0001F1F9","\U0001F1FA","\U0001F1FB","\U0001F1FC","\U0001F1FD","\U0001F1FE","\U0001F1FF"]
+
+
+    emojis = random.sample(emoji_list,5)
+
+    message = await ctx.send('game')
+    botmsgid = message.id
+
+    for x in range(5):
+        await message.add_reaction(emojis[x])
 
 
 
 
+    @bot.event
+    async def on_reaction_add(reaction, user):
+        rex = reaction.emoji
+        # print(rex)
+        # print(reaction.message)
+        # print(reaction.message.id)
+        # print(reaction.message.author.id)
 
+        if botmsgid == reaction.message.id:
+            print(rex)
 
+            user_input.append(rex)
 
+        time.sleep(10)
 
+        answer = emojis.sort()
+        print(answer)
+        print(user_input)
 
+        if answer == user_input:
+            await ctx.send("Enemies Defeated!")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        else:
+            await ctx.send("you suck")
 
 
 
@@ -354,5 +375,4 @@ async def hunt(ctx):
 #     await ctx.send(msg.author)
 
 
-
-bot.run(_token)
+bot.run("MTAzMjU1MTcwMzYxNjE1OTgwNg.GIokya.fs3teYkttqmMNRK6uVQHVyRKSkHfGc4PerGjZ8")

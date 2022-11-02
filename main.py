@@ -7,6 +7,10 @@ import calendar
 import time
 import math
 
+
+
+
+
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(intents=intents, command_prefix='$')
@@ -17,6 +21,7 @@ _token = bot_database.token()
 @bot.event
 async def on_ready():
     print("Logged in as {0.user}".format(bot))
+    await bot.change_presence(activity=discord.Game(name="$howtoplay for help"))
 
 
 # @bot.event
@@ -158,7 +163,7 @@ async def inventory(ctx):
 
     while x < len(b):
         if b[x] != 0:
-            v = str(a[x][0]) + " Level " + str(b[x])
+            v = str(a[x][0]) + " Level " + str(math.ceil(b[x]))
             c.append(v)
 
         x = x + 1
@@ -206,11 +211,12 @@ async def checkin(ctx):
 
 @bot.command()
 async def hunt(ctx):
-    global user, stats, char_selected, enemy
+    global user, stats, char_selected, enemy,element
     user = str(ctx.author)
     enemy = "n"
     char_selected = "n"
     stats = [0, 0, 0]
+    print(user)
 
     await ctx.send(f"Select one \n"
                    f"1:Starter Hunt \n"
@@ -236,9 +242,12 @@ async def hunt(ctx):
         elif msg.content == "2":
 
             l = ["slime", "samachurl"]
+            elements= ["pyro","cryo","ameno","electro","dendro","hydro","geo"]
+            #elements = ["electro"]
             enemy = random.choice(l)
+            element = random.choice(elements)
 
-            await ctx.send(enemy)
+            await ctx.send(f"A {element} {enemy} has appeared")
 
 
         else:
@@ -248,7 +257,7 @@ async def hunt(ctx):
     except:
         await ctx.send("U are too slow to hunt!")
 
-    if enemy != "n":
+    if enemy != "n" and msg.content == "1":
 
         try:
             char_selected = await bot.wait_for("message", check=check, timeout=5.0)
@@ -261,7 +270,7 @@ async def hunt(ctx):
                 if lvl != 0:
                     await ctx.send("attacking")
 
-                    await attacking(ctx, user, stats, char_selected, enemy , lvl)
+                    await attacking(ctx, user, stats, char_selected.content, enemy, lvl,4)
 
                 #################################################attacking func##########################################################
 
@@ -271,37 +280,76 @@ async def hunt(ctx):
             except:
                 await ctx.send("Invalid char")
 
+        except:
+            await ctx.send("You are Too Slow to be a hunter!")
+            # if lvl > 0.33:
+            #     bot_database.update_char_starter(str(user), str(char_selected.content))
+            #     await ctx.send("Hp decreased by 33%.. CHECK $inventory TO SEE IF LEVEL DECREASED OR NOT")
+            # else:
+            #     bot_database.kill_char(str(user), str(char_selected.content))
+            #     await ctx.send("Not enough HP, character died")
 
 
 
+    if enemy != "n" and msg.content == "2":
 
+        try:
+            char_selected = await bot.wait_for("message", check=check, timeout=5.0)
 
+            try:
+                stats = bot_database.char_stat(char_selected.content)
+                print(stats)
+                lvl = bot_database.check_char(user, char_selected.content)[0]
+                print(lvl)
+                if element != stats[0]:
+                    if lvl != 0:
+                        await ctx.send("attacking")
 
+                        await attacking(ctx, user, stats, char_selected.content, enemy, lvl, 5)
 
+                    #################################################attacking func##########################################################
+
+                    else:
+                        await ctx.send("U dont have the char")
+                else:
+                    if lvl > 1:
+                        bot_database.update_char_immune(str(user), str(char_selected.content))
+                        await ctx.send("ENEMY IS IMMUNE! Hp decreased by 100%.. CHECK $inventory TO SEE IF LEVEL DECREASED OR NOT")
+                    else:
+                        bot_database.kill_char(str(user), str(char_selected.content))
+                        await ctx.send("ENEMY IS IMMUNE! Not enough HP, character died")
+
+            except:
+                await ctx.send("Invalid char")
 
         except:
-            await ctx.send("Too Slow! The enemy is attacking you")
-            # logic
+            await ctx.send("You are Too Slow to be a hunter!")
+            # if lvl > 0.33:
+            #     bot_database.update_char_starter(str(user), str(char_selected.content))
+            #     await ctx.send("Hp decreased by 33%.. CHECK $inventory TO SEE IF LEVEL DECREASED OR NOT")
+            # else:
+            #     bot_database.kill_char(str(user), str(char_selected.content))
+            #     await ctx.send("Not enough HP, character died")
 
 
-@bot.command()
-async def test(ctx):
-    await ctx.send("yes")
+# @bot.command()
+# async def test(ctx):
+#     await ctx.send("yes")
+#
+#     def check(msg):
+#         return msg.author == ctx.author and msg.channel == ctx.channel and \
+#                msg.content
+#
+#     msg = await bot.wait_for("message", check=check, timeout=15.0)
+#     # if msg.content == "no":
 
-    def check(msg):
-        return msg.author == ctx.author and msg.channel == ctx.channel and \
-               msg.content
 
-    msg = await bot.wait_for("message", check=check, timeout=15.0)
-    # if msg.content == "no":
-
-
-@bot.command()
-async def lol(ctx):
-    message = await ctx.send('test')
-    emoji = '\N{THUMBS UP SIGN}'
-    print(emoji)
-    await message.add_reaction("\U0001F1E6")
+# @bot.command()
+# async def lol(ctx):
+#     message = await ctx.send('test')
+#     emoji = '\N{THUMBS UP SIGN}'
+#     print(emoji)
+#     await message.add_reaction("\U0001F1E6")
 
 
 # @bot.event
@@ -313,17 +361,21 @@ async def lol(ctx):
 #     print(reaction.message.id)
 #     print(reaction.message.author.id)
 
-async def attacking(ctx, usr, stats, char_selected, enemy ,lvl):
+async def attacking(ctx, usr, stats, char_selected, enemy, lvl,base):
     global user_input
     global emojis
     global loose
-    loose = False
+    global time_stamp1
+
+
 
     user_input = []
-    emoji_list = ["\U0001F1E6","\U0001F1E7","\U0001F1E8","\U0001F1E9","\U0001F1EA","\U0001F1EB","\U0001F1EC","\U0001F1ED","\U0001F1EE","\U0001F1EF","\U0001F1F0","\U0001F1F1","\U0001F1F2","\U0001F1F3","\U0001F1F4","\U0001F1F5","\U0001F1F6","\U0001F1F7","\U0001F1F8","\U0001F1F9","\U0001F1FA","\U0001F1FB","\U0001F1FC","\U0001F1FD","\U0001F1FE","\U0001F1FF"]
+    emoji_list = ["\U0001F1E6", "\U0001F1E7", "\U0001F1E8", "\U0001F1E9", "\U0001F1EA", "\U0001F1EB", "\U0001F1EC",
+                  "\U0001F1ED", "\U0001F1EE", "\U0001F1EF", "\U0001F1F0", "\U0001F1F1", "\U0001F1F2", "\U0001F1F3",
+                  "\U0001F1F4", "\U0001F1F5", "\U0001F1F6", "\U0001F1F7", "\U0001F1F8", "\U0001F1F9", "\U0001F1FA",
+                  "\U0001F1FB", "\U0001F1FC", "\U0001F1FD", "\U0001F1FE", "\U0001F1FF"]
 
-
-    emojis = random.sample(emoji_list,5)
+    emojis = random.sample(emoji_list, 5)
 
     message = await ctx.send('game')
     botmsgid = message.id
@@ -331,8 +383,9 @@ async def attacking(ctx, usr, stats, char_selected, enemy ,lvl):
     for x in range(5):
         await message.add_reaction(emojis[x])
 
-    time.sleep(10)
-    loose=True
+    current_GMT1 = time.gmtime()
+    time_stamp1 = calendar.timegm(current_GMT1)
+
 
 
 
@@ -340,31 +393,27 @@ async def attacking(ctx, usr, stats, char_selected, enemy ,lvl):
     @bot.event
     async def on_reaction_add(reaction, user):
         rex = reaction.emoji
-        # print(rex)
-        # print(reaction.message)
-        # print(reaction.message.id)
-        # print(reaction.message.author.id)
-
         if botmsgid == reaction.message.id:
-            print(rex)
-
             user_input.append(rex)
 
 
-        if len(user_input)==5:
-
-            # print(user_input)
-
-            if user_input[0]<user_input[1]<user_input[2]<user_input[3]<user_input[4] and loose==False:
-                await ctx.send("Enemies Defeated!")
-
+        current_GMT2 = time.gmtime()
+        time_stamp2 = calendar.timegm(current_GMT2)
+        if len(user_input) == 5:
+            if user_input[0] < user_input[1] < user_input[2] < user_input[3] < user_input[4] and (time_stamp2 - time_stamp1 ) <= 10:
+                print(user_input)
+                reward = lvl * int(base)
+                await ctx.send(f"Enemies Defeated! Rewarded {math.ceil(reward)} primos!")
+                primo_final = int(bot_database.wallet(str(user))) + math.ceil(reward)
+                bot_database.update_wallet(str(user),str(primo_final))
             else:
-                await ctx.send("you suck")
-
-
-
-
-
+                print(user_input)
+                if lvl > 0.33:
+                    bot_database.update_char_starter(str(user),str(char_selected))
+                    await ctx.send("You Suck, Hp decreased by 33%.. CHECK $inventory TO SEE IF LEVEL DECREASED OR NOT")
+                else:
+                    bot_database.kill_char(str(user),str(char_selected))
+                    await ctx.send("Not enough HP, character died")
 
 
 
@@ -382,5 +431,8 @@ async def attacking(ctx, usr, stats, char_selected, enemy ,lvl):
 #     msg = await bot.wait_for("message", check=check, timeout=10.0)
 #     await ctx.send(msg.author)
 
+@bot.command()
+async def howtoplay(ctx):
+    await ctx.send(file=discord.File("Instruction.txt"))
 
-bot.run("MTAzMjU1MTcwMzYxNjE1OTgwNg.GW1VqD.a40Rvh-D6an2tQh1tNG3U1eBaNHN4WtqdVMwVQ")
+bot.run(_token)

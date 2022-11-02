@@ -1,0 +1,42 @@
+~~~~~~~~~~~~~~~~~~ This is a discord gamebot made by "Not_Blackbuck#4912" and "ASJTheGamer#0844" ~~~~~~~~~~~~~~~~~~~~~~~
+
+This bot is made in reference to game Genshin Impact and uses similar objects as in game.
+
+********************************************** HOW TO PLAY ****************************************************
+Commands:
+
+$register : every user need to register for the first time to use. User must register
+            only once and the 'DATA IS SAME ACROSS ALL DISCORD SERVERS!'
+            all users are given 100 primos at start
+$starter : user can get a free starter character only if user DON'T HAVE ANY CHARACTER. Works even if you're not new but
+           all characters are dead.
+
+$whoami : to get your player id
+
+$wallet : You can check your current balance. The currency is "primos"
+
+$inventory : User can see their characters they have and the level
+
+$checkin : Users can earn random free primos every 5 minutes
+
+$wish : Users can get new characters or level-up by getting existing characters. Wishing has random and same chance to
+        get all Mondstadt character. If one gets an existing character the level of the character in inventory is
+        incremented by one.
+
+$gamble : User can only gamble if they have a balance over 100. From gambling one can either earn or loose primos in
+          range from 0 to 100. Odds are equally random in all cases.
+
+$hunt : 1)Starter Hunt : once selected an enemy will be spawned and user need to select a character they have within
+         5 seconds. Once selected , 5 random emojis reaction with letter will spawn , The user needs to click the
+         alphabet emojis in DICTIONARY ORDER in one try WITHIN 10 SECONDS. If failed then the character will take damage
+         and hunt will be stopped. HP is reduced by 33% in this hunt. THE REWARD per hunt is based on type of hunt and
+         is proportional to the CHARACTER LEVEL USED to hunt.... so more the level , more primos rewarded.
+
+
+         1)Pro Hunt : once selected an enemy will be spawned WITH AN ELEMENT and user need to select a character of
+         DISSIMILAR ELEMENT they have within 5 seconds. IF the character is of same element the enemy is immune and
+         character HP is reduced by 100. Once selected , 5 random emojis reaction with letter will spawn, The user needs
+         to click the alphabet emojis in DICTIONARY ORDER in one try WITHIN 10 SECONDS. If failed then the character
+         will take damage and hunt will be stopped. HP is reduced by 66% in this hunt. THE REWARD per hunt is based on
+         type of hunt and is proportional to the CHARACTER LEVEL USED to hunt.... so more the level , more primos
+         rewarded.
